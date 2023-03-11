@@ -1,7 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Board from './components/Board';
+import EditPanel from './components/EditPanel';
 
+/*
 function App() {
   return (
     <div className="App">
@@ -21,6 +24,16 @@ function App() {
       </header>
     </div>
   );
+}*/
+
+function App() {
+  return (
+    <div className="sudoku-page">
+      <Board></Board>
+      <EditPanel></EditPanel>
+    </div>
+  );
+
 }
 
 export default App;
