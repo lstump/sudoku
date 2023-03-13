@@ -103,16 +103,21 @@ export const GameSlice = createSlice({
     },
     clearWorksheet: (state: GameState) => {
       state.worksheet = initGameState().worksheet;
+    },
+    clearInvalidValues: (state: GameState) => {
+      state.worksheet = GameMgr.clearInvalidValues(state.layout, state.worksheet);
     }
   }
 });
 
-export const { setGameValue, setWorksheetEntry, setWorksheetValue, setWorksheetRow, setWorksheetCol, setWorksheetBox, clearWorksheet} = GameSlice.actions;
+export const { setGameValue, setWorksheetEntry, setWorksheetValue, setWorksheetRow, setWorksheetCol, setWorksheetBox, clearWorksheet, clearInvalidValues} = GameSlice.actions;
 
-export const getLayoutSelector = () => (state: RootState) => state.game.layout;
-export const getInitialLayoutSelector = () => (state: RootState) => state.game.initialLayout;
-export const getWorksheetSelector = () => (state: RootState) => state.game.worksheet;
-export const getErrorsSelector = () => (state: RootState) => state.game.errors;
-export const getGameSize = () => (state: RootState) => state.game.layout.length;
+export const getLayoutSelector = () => (state: RootState) => state.game.present.layout;
+export const getPrevLayoutSelector = () => (state: RootState) => (state.game.past.length ? state.game.past[state.game.past.length-1].layout: state.game.present.layout);
+export const getInitialLayoutSelector = () => (state: RootState) => state.game.present.initialLayout;
+export const getWorksheetSelector = () => (state: RootState) => state.game.present.worksheet;
+export const getPrevWorksheetSelector = () => (state: RootState) => (state.game.past.length ? state.game.past[state.game.past.length-1].worksheet: state.game.present.worksheet);
+export const getErrorsSelector = () => (state: RootState) => state.game.present.errors;
+export const getGameSize = () => (state: RootState) => state.game.present.layout.length;
 
 export default GameSlice.reducer;

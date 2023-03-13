@@ -1,11 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import guiReducer from '../features/guiSlice';
 import gameReducer from '../features/gameSlice';
+import undoable from 'redux-undo';
 
 export const store = configureStore({ 
   reducer: {
     gui: guiReducer,
-    game: gameReducer
+    game: undoable(gameReducer)
   },
 });
 

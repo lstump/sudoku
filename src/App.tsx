@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Board from './components/Board';
 import EditPanel from './components/EditPanel';
+import ControlPanel from './components/ControlPanel';
 
 /*
 function App() {
@@ -29,6 +30,7 @@ function App() {
 function App() {
   return (
     <div className="sudoku-page">
+      <ControlPanel></ControlPanel>
       <Board></Board>
       <EditPanel></EditPanel>
     </div>

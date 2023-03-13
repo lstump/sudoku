@@ -60,8 +60,8 @@ code {
   background-color: white;
   height: -webkit-fill-available;
   font-size: 0.8rem;
-  color: darkgray;
-}
+  color: black;
+  border: 2px solid transparent;}
 
 .sudoku-grid {
   display: grid;
@@ -108,16 +108,33 @@ code {
   font-weight: 900;
 }
 
-.edit-panel {
+
+.panel {
   min-width: 10rem;
   background-color: white;
-  border: 3px solid hotpink;
+  border: 3px solid transparent;
   border-radius: 10%;
   position: absolute;
-  right: 1rem;
   top: 1rem;
   padding: 1rem;
   width:fit-content
+}
+
+.edit-panel {
+  border-color: hotpink;
+  right: 1rem;
+}
+
+
+.control-panel {
+  border-color: greenyellow;
+  left: 1rem;
+}
+
+.button-panel {
+  display: flex;
+  
+  margin: 1rem 0.5rem;
 }
 
 
@@ -126,12 +143,16 @@ code {
 }
 
 .updated {
-  background-color: aqua;
+  border-color: yellow;
 }
 
 .editable {
   color: darkgreen;
   font-size: x-large;
+}
+
+.unselected {
+  background-color: gainsboro;
 }
 
 .editable.error {

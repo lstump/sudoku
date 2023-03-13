@@ -155,6 +155,37 @@ export class GameMgr {
 	}
 
 
+	static clearInvalidValues = (layout: Layout<SudokuTile>, worksheet: Layout<SudokuHelperTile>) => {
+
+		var newWorksheet = JSON.parse(JSON.stringify(worksheet)) as any as Layout<SudokuHelperTile>;
+
+		[GroupType.row, GroupType.col, GroupType.box].forEach(eachType => {
+			for (var groupIndex = 0; groupIndex < 9; groupIndex++) {
+				// mapOfOccurringValues is a data dictionary of values that already occur in this group
+				var occurringValues: Array<SudokuTile> = [];
+				for (var valueIndex = 0; valueIndex < layout.length; valueIndex++) {
+					var value = GameMgr.getValueFmGroupTypeAndValueIndex(layout, eachType, groupIndex, valueIndex);
+					if (null !== value) {
+						occurringValues.push(value);
+					}
+				}
+				// now mapOfOccurringValues is set to a boolean map where each entry in the map is true if the value exists in the group
+				// so walk the group one more time and turn OFF the helper cell entries that cannot occur
+				for (var valueIndex = 0; valueIndex < layout.length; valueIndex++) {
+					var helper = GameMgr.getValueFmGroupTypeAndValueIndex(newWorksheet, eachType, groupIndex, valueIndex);
+					if (helper) {
+						occurringValues.forEach(eachOccurringValue => {
+							if (eachOccurringValue !== null && helper) {
+								helper[eachOccurringValue] = false;
+							}
+						});
+					}
+				}
+			}
+		});
+		return newWorksheet;
+	}
+
 	static getValueFmGroupTypeAndValueIndex<T>(layout: Layout<T>, groupType: GroupType, groupIndex: number, valueIndex: number): T | null {
 		return layout[GameMgr.getRowIndexFmGroup(groupType, groupIndex, valueIndex)][GameMgr.getColIndexFmGroup(groupType, groupIndex, valueIndex)];
 	}

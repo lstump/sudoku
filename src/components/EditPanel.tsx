@@ -60,14 +60,13 @@ function EditPanel() {
 			case GroupType.box:
 				dispatch(setWorksheetBox({ box: box, cell: value, value: !isOn }));
 				break;
-			
 		}
 	}
 
+
 	return (
-		<div className="edit-panel">
-			<div className="title">Guess</div>
-			<div className="button-panel"><Button onClick={() => dispatch(clearWorksheet()) }>Clear</Button></div>
+		<div className="panel edit-panel">
+			<div className="title">Edit Panel</div>
 			<div className="sudoku-grid">
 				{
 					array.map(each => {

@@ -1,14 +1,10 @@
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getErrorsSelector, getInitialLayoutSelector, getLayoutSelector, getWorksheetSelector } from "../features/gameSlice";
+import { getErrorsSelector, getInitialLayoutSelector, getLayoutSelector, getPrevWorksheetSelector, getWorksheetSelector } from "../features/gameSlice";
 import { FocusedColSelector, FocusedRowSelector, setFocus } from "../features/guiSlice";
 import { GameError } from "../lib/GameMgr";
 
-var counter = 0;
-
 function Tile({ row, col }: { row: number, col: number }) {
-	counter++;
-
 	const layout = useSelector(getLayoutSelector());
 	const initialLayout = useSelector(getInitialLayoutSelector());
 	const worksheet = useSelector(getWorksheetSelector());
@@ -32,20 +28,10 @@ function Tile({ row, col }: { row: number, col: number }) {
 			})
 		})
 	}
-
-	var [prevHelper, setPrevHelper] = useState(helper);
-	var [prevCounter, setPrevCounter] = useState(counter);
-
-	if (row === 0 && col === 0) {
-		console.log("counter: " + counter);
-		console.log(`Tile for (${row}, ${col}, counter: ${counter}, prevCounter: ${prevCounter}`);
-		console.log(`Tile for (${row}, ${col}, \r\nh: ${JSON.stringify(helper)}, \r\np: ${JSON.stringify(prevHelper)}`);
-	}
+	const prevWorksheet = useSelector(getPrevWorksheetSelector());
+	const prevHelper = prevWorksheet[row][col];
 
 	var className = "sudoku-tile sudoku-grid-element" + (isFocused ? " focused" : " not-focused") + (readonly ? " readonly" : " editable") + (hasError ? " error" : " noerror") + (value === null ? " sudoku-grid" : "");
-	//console.log(`${row}, ${col} selected: ${selectedRow}, ${selectedCol} isFocused: ${isFocused}, className: ${className}`);
-
-	//console.log(`${row}, ${col} worksheet:`, worksheet);
 
 	function onClick() {
 		//debugger;
@@ -55,8 +41,7 @@ function Tile({ row, col }: { row: number, col: number }) {
 		//console.log("ref:", ref);
 		if (ref.current) {
 			ref.current.focus();
-		}
-		setPrevHelper(helper);
+		}	
 	}
 	const ref = useRef<HTMLDivElement>(null);
 
