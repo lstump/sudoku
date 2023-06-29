@@ -1,7 +1,7 @@
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getErrorsSelector, getInitialLayoutSelector, getLayoutSelector, getPrevWorksheetSelector, getWorksheetSelector } from "../features/gameSlice";
-import { FocusedColSelector, FocusedRowSelector, setFocus } from "../features/guiSlice";
+import { FocusedColSelector, FocusedRowSelector, FocusedValSelector, setFocus } from "../features/guiSlice";
 import { GameError } from "../lib/GameMgr";
 
 function Tile({ row, col }: { row: number, col: number }) {
@@ -11,6 +11,8 @@ function Tile({ row, col }: { row: number, col: number }) {
 	const errors = useSelector(getErrorsSelector());
 	const selectedRow = useSelector(FocusedRowSelector());
 	const selectedCol = useSelector(FocusedColSelector());
+	const focusedValue = useSelector(FocusedValSelector());
+
 
 	const dispatch = useDispatch();
 
@@ -52,7 +54,9 @@ function Tile({ row, col }: { row: number, col: number }) {
 					Object.keys(helper).map((eachKey) => {
 						var on = helper[eachKey];
 						var prevOn = prevHelper[eachKey];
-						return (<div className={"sudoku-cell" + (on ? " selected" : " unselected") + (prevOn !== on ? " updated" : "")} key={eachKey}>{on ? eachKey : " "}</div>);
+						var focused = focusedValue == eachKey;
+						console.log(`focusedValue: ${focusedValue}, focused: ${focused}, eachKey: ${eachKey}`)
+						return (<div className={"sudoku-cell" + (on ? " selected" : " unselected") + (prevOn !== on ? " updated" : "") + (focused ? " focused-cell": "")} key={eachKey}>{on ? eachKey : " "}</div>);
 					})
 				}
 			</div>);

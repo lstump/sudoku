@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import { GameError, GameMgr, SudokuHelperTile, SudokuTile } from '../lib/GameMgr';
 import { Layout } from '../lib/Grid';
+import { getSettings, setSettings } from '../lib/SettingsMgr';
 
 export type GameState = {
   layout: Layout<SudokuTile>,
@@ -46,11 +47,24 @@ const testGame2: Layout<SudokuTile> = [
   [3, null, null, null, null, null, null, null, null]
 ];
 
-export const initGameState = () => {
+const testGame3: Layout<SudokuTile> = [
+  [null, null, 7, null, 2, null, 5, null, null],
+  [null, 8, null, 4, null, 3, null, 6, null],
+  [1, null, null, null, 6, null, null, null, 4],
+  [null, 3, null, null, null, null, null, 2, null],
+  [2, null, 6, null, null, null, 7, null, 1],
+  [null, 7, null, null, null, null, null, 4, null],
+  [7, null, null, null, 5, null, null, null, 6],
+  [null, 6, null, 8, null, 7, null, 9, null],
+  [null, null, 9, null, 3, null, 4, null, null]
+];
+
+export const initGameState = ():GameState => {
+  
   return {
     //layout: new Array(9).fill([]).map(each => new Array(9).fill(null as SudokuTile)),
-    layout: JSON.parse(JSON.stringify(testGame2)),
-    initialLayout: testGame2,
+    layout: JSON.parse(JSON.stringify(testGame3)),
+    initialLayout: testGame3,
     worksheet: new Array(9).fill([]).map(each => new Array(9).fill(null).map(each => {
       var helper: SudokuHelperTile = {};
       for (var i = 1; i <= 9; i++) { 
@@ -62,7 +76,12 @@ export const initGameState = () => {
   };
 };
 
-const initialState = initGameState();
+const defaultState = initGameState();
+const initialState: GameState = getSettings("gameState", defaultState);
+
+const save = (state: GameState) => {
+  setSettings("gameState", state);
+}
 
 export const GameSlice = createSlice({
   name: 'game',
@@ -71,27 +90,33 @@ export const GameSlice = createSlice({
     setInitialGame: (state: GameState, action: PayloadAction<{layout: Layout<SudokuTile>}>) => {
       state.initialLayout = action.payload.layout;
       state.layout = JSON.parse(JSON.stringify(action.payload.layout));
-      state.errors = GameMgr.checkLayout(state.layout)
+      state.errors = GameMgr.checkLayout(state.layout);
+      save(state);
     },
     setGameValue: (state: GameState, action: PayloadAction<{row: number, col: number, value: SudokuTile}>) => {
       state.layout[action.payload.row][action.payload.col] = action.payload.value;
       state.errors = GameMgr.checkLayout(state.layout);
+      save(state);
     },
     setWorksheetEntry: (state: GameState, action: PayloadAction<{row: number, col: number, value: SudokuHelperTile}>) => {
       state.worksheet[action.payload.row][action.payload.col] = action.payload.value;
+      save(state);
     },
     setWorksheetValue: (state: GameState, action: PayloadAction<{row: number, col: number, cell: number, value: boolean}>) => {
       state.worksheet[action.payload.row][action.payload.col][action.payload.cell] = action.payload.value;
+      save(state);
     },
     setWorksheetRow: (state: GameState, action: PayloadAction<{ row: number, cell: number, value: boolean }>) => {
       for (var col = 0; col < state.worksheet.length; col++) {
         state.worksheet[action.payload.row][col][action.payload.cell] = action.payload.value;
       }
+      save(state);
     },
     setWorksheetCol: (state: GameState, action: PayloadAction<{ col: number, cell: number, value: boolean }>) => {
       for (var row = 0; row < state.worksheet.length; row++) {
         state.worksheet[row][action.payload.col][action.payload.cell] = action.payload.value;
       }
+      save(state);
     },
     setWorksheetBox: (state: GameState, action: PayloadAction<{ box: number, cell: number, value: boolean }>) => {
       var coordinates = GameMgr.getBoxCoordinates(action.payload.box);
@@ -100,17 +125,25 @@ export const GameSlice = createSlice({
         var coordinate = coordinates[index];
         state.worksheet[coordinate[0]][coordinate[1]][action.payload.cell] = action.payload.value;
       }
+      save(state);
     },
-    clearWorksheet: (state: GameState) => {
+    resetWorksheet: (state: GameState) => {
       state.worksheet = initGameState().worksheet;
+      save(state);
+    },
+    resetGame: (state: GameState) => {
+      state.layout = state.initialLayout;
+      state.worksheet = initGameState().worksheet;
+      save(state);
     },
     clearInvalidValues: (state: GameState) => {
       state.worksheet = GameMgr.clearInvalidValues(state.layout, state.worksheet);
+      save(state);
     }
   }
 });
 
-export const { setGameValue, setWorksheetEntry, setWorksheetValue, setWorksheetRow, setWorksheetCol, setWorksheetBox, clearWorksheet, clearInvalidValues} = GameSlice.actions;
+export const { setGameValue, setWorksheetEntry, setWorksheetValue, setWorksheetRow, setWorksheetCol, setWorksheetBox, resetWorksheet, resetGame, clearInvalidValues} = GameSlice.actions;
 
 export const getLayoutSelector = () => (state: RootState) => state.game.present.layout;
 export const getPrevLayoutSelector = () => (state: RootState) => (state.game.past.length ? state.game.past[state.game.past.length-1].layout: state.game.present.layout);

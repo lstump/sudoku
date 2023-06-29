@@ -133,13 +133,19 @@ code {
 
 .button-panel {
   display: flex;
-  
+
   margin: 1rem 0.5rem;
 }
 
 
 .focused {
   outline: -webkit-focus-ring-color auto 1px;
+}
+
+.focused-cell {
+  color: blueviolet;
+  font-weight: 900;
+  font-size: 1.2rem;
 }
 
 .updated {

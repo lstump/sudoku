@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, FormCheck } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { getLayoutSelector, getWorksheetSelector, setGameValue, setWorksheetCol, setWorksheetRow, setWorksheetValue, setWorksheetBox, clearWorksheet } from "../features/gameSlice";
+import { getLayoutSelector, getWorksheetSelector, setGameValue, setWorksheetCol, setWorksheetRow, setWorksheetValue, setWorksheetBox, resetWorksheet } from "../features/gameSlice";
 import { FocusedColSelector, FocusedRowSelector } from "../features/guiSlice";
 import { GameMgr, SudokuTile } from "../lib/GameMgr";
 import { GroupType } from "../lib/Grid";
